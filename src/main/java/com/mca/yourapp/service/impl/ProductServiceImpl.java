@@ -3,7 +3,6 @@ package com.mca.yourapp.service.impl;
 import com.mca.yourapp.interfaces.dto.ProductDetail;
 import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.ProductService;
-import com.mca.yourapp.service.SerializationService;
 import com.mca.yourapp.service.external.mocks.MocksConnector;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 import static com.mca.yourapp.conf.CacheConfig.GET_SIMILAR_PRODUCTS_CACHE;
 
@@ -24,9 +23,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private LogService logService;
-
-    @Autowired
-    private SerializationService serializationService;
 
     @Override
     public List<ProductDetail> getSimilarProducts(final String productId) throws EntityNotFound {

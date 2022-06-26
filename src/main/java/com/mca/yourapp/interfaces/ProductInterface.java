@@ -28,13 +28,11 @@ public class ProductInterface {
      */
     @GetMapping(value = GET_SIMILAR_PRODUCTS_URL, produces = "application/json")
     public ResponseEntity<String> getSimilarProducts(@PathVariable(required = true) String productId) {
-        final List<ProductDetail> similarProducts;
         try {
-            similarProducts = productService.getSimilarProducts(productId);
+            final List<ProductDetail> similarProducts = productService.getSimilarProducts(productId);
+            return new ResponseEntity<>(similarProducts.toString(), OK);
         } catch (final EntityNotFound e) {
             return new ResponseEntity<>("{\"message\":\"Product Not found\"}", HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(similarProducts.toString(), OK);
     }
 }
