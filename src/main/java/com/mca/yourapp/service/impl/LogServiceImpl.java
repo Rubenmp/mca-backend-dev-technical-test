@@ -36,6 +36,17 @@ public class LogServiceImpl implements LogService {
         requireNotNull(message, "Log message must be provided.");
         final String logMessage = createLog(type, message);
 
+        writeToLogFile(logMessage);
+    }
+
+    /**
+     * This method can not be run in parallel (usage of synchronized)
+     * because several logs could be mixed.
+     * It's better to guarantee that logs are written sequentially.
+     * If there is any performance issue it can be fixed by increasing logs granularity
+     * in different synchronized methods (using several files)
+     * */
+    private synchronized void writeToLogFile(final String logMessage) {
         try (FileWriter fw = new FileWriter(LOG_FILE_NAME,true)) {
             fw.write(logMessage);
         } catch (IOException e) {

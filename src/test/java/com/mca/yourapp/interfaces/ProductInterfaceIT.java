@@ -109,7 +109,7 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         assertArrayEquals(List.of("3", "100", "1000").toArray(), productIds1.toArray(), "Returned product ids");
         assertEquals(productIds1, productIds2, "Products");
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 15 * (1000000), "Second access must be faster than 15 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        assertTrue(estimatedTime2 < 20 * (1000000), "Second access must be faster than 20 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
     }
 
 
@@ -129,7 +129,7 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         checkProductNotFoundResponse(product2Str);
 
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 15 * (1000000), "Second access must be faster than 15 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        assertTrue(estimatedTime2 < 20 * (1000000), "Second access must be faster than 20 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
     }
 
     private void clearCache() {

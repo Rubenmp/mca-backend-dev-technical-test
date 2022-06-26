@@ -29,10 +29,20 @@ public class ProductServiceImpl implements ProductService {
     private SerializationService serializationService;
 
     @Override
-    @Cacheable(value = GET_SIMILAR_PRODUCTS_CACHE)
     public List<ProductDetail> getSimilarProducts(final String productId) throws EntityNotFound {
-        if (productId == null || mocksConnector.getProduct(productId) == null) {
+        final List<ProductDetail> products = getSimilarProductsInternal(productId);
+
+        if (products == null) {
             throw new EntityNotFound("Input product \"" + productId + "\" not found.");
+        }
+
+        return products;
+    }
+
+    @Cacheable(value = GET_SIMILAR_PRODUCTS_CACHE)
+    private List<ProductDetail> getSimilarProductsInternal(String productId) {
+        if (productId == null || mocksConnector.getProduct(productId) == null) {
+            return null; // Sending null in order to allow method caching in this scenario
         }
 
         final List<String> productIds = mocksConnector.getSimilarProductIds(productId);
