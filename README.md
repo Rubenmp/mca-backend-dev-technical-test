@@ -1,5 +1,5 @@
 # MCA backend dev test
-Products API using external mocks module.
+Products API using external [mocks module](https://github.com/dalogax/backendDevTest).
 Only one endpoint is available, example:
 ```
 http://localhost:5000/product/1/similar
