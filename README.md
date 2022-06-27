@@ -41,7 +41,7 @@ Name convention:
 - Unit tests: **Test.java*
 - Integration tests: **IT.java*
 
-Integration tests require module Mocks (in project *backendDevTest*) to be running.
+Integration tests require module Mocks (in project [*backendDevTest*](https://github.com/dalogax/backendDevTest)) to be running.
 ```bash
 sudo docker compose up -d simulado influxdb grafana
 ```
@@ -51,7 +51,7 @@ Then run all the tests with:
 ./gradlew test
 ```
 
-or only the unit tess:
+or only the unit tests:
 ```bash
  ./gradlew test --tests '*Test'
 ```
