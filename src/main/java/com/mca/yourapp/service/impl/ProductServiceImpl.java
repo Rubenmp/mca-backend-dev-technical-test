@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Cacheable(value = GET_SIMILAR_PRODUCTS_CACHE)
-    private List<ProductDetail> getSimilarProductsInternal(String productId) {
+    private List<ProductDetail> getSimilarProductsInternal(final String productId) {
         if (productId == null || mocksConnector.getProduct(productId) == null) {
             return null; // Sending null in order to allow method caching in this scenario
         }

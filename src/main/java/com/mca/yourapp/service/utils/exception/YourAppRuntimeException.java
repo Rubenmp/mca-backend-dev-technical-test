@@ -5,7 +5,4 @@ public class YourAppRuntimeException extends RuntimeException {
         super(message);
     }
 
-    public YourAppRuntimeException(final Exception exception) {
-        super(exception);
-    }
 }

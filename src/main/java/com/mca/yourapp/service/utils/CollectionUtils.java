@@ -7,8 +7,7 @@ import java.util.List;
 import static com.mca.yourapp.service.utils.PreconditionUtils.require;
 
 public class CollectionUtils {
-    private CollectionUtils() {
-    }
+    private CollectionUtils() {}
 
     public static <T> List<List<T>> splitToListsWithSize(final List<T> collection, final int partitionSize) {
         require(partitionSize > 0, "Size to split lists must be provided");
@@ -16,7 +15,7 @@ public class CollectionUtils {
             return Collections.emptyList();
         }
 
-        List<List<T>> partitions = new ArrayList<>();
+        final List<List<T>> partitions = new ArrayList<>();
         for (int i = 0; i < collection.size(); i += partitionSize) {
             partitions.add(collection.subList(i, Math.min(i + partitionSize, collection.size())));
         }
