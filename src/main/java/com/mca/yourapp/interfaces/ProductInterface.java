@@ -1,7 +1,7 @@
 package com.mca.yourapp.interfaces;
 
-import com.mca.yourapp.interfaces.dto.ProductDetail;
 import com.mca.yourapp.service.ProductService;
+import com.mca.yourapp.interfaces.dto.ProductDetail;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,17 +22,38 @@ public class ProductInterface {
     private ProductService productService;
 
     /**
-     * Similar products
+     * Similar products.
+     *
+     * It returns {@link org.springframework.http.ResponseEntity ResponseEntity<String>} due to the restriction
+     *  '404':
+     *     description: Product Not found
+     * that makes strong typing counterproductive.
+     * The response actually returns a list of {@link com.mca.yourapp.interfaces.dto.ProductDetail ProductDetail}
+     * in json format.
      *
      * @param productId required path parameter
      */
     @GetMapping(value = GET_SIMILAR_PRODUCTS_URL, produces = "application/json")
     public ResponseEntity<String> getSimilarProducts(@PathVariable(required = true) String productId) {
         try {
-            final List<ProductDetail> similarProducts = productService.getSimilarProducts(productId);
-            return new ResponseEntity<>(similarProducts.toString(), OK);
+            final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts = productService.getSimilarProducts(productId);
+            return new ResponseEntity<>(toProduct(similarProducts).toString(), OK);
         } catch (final EntityNotFound e) {
             return new ResponseEntity<>("{\"message\":\"Product Not found\"}", HttpStatus.NOT_FOUND);
         }
+    }
+
+    private List<ProductDetail> toProduct(final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts) {
+        return similarProducts.stream().map(this::toProduct).toList();
+    }
+
+    private ProductDetail toProduct(final com.mca.yourapp.service.dto.ProductDetail product) {
+        final ProductDetail productDetail = new ProductDetail();
+        productDetail.setId(product.getId());
+        productDetail.setName(product.getName());
+        productDetail.setPrice(product.getPrice());
+        productDetail.setAvailability(product.isAvailability());
+
+        return productDetail;
     }
 }

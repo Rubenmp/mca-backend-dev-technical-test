@@ -1,6 +1,6 @@
 package com.mca.yourapp.service;
 
-import com.mca.yourapp.interfaces.dto.ProductDetail;
+import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.external.mocks.MocksConnector;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
 import com.mca.yourapp.service.impl.ProductServiceImpl;
