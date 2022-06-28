@@ -7,12 +7,9 @@ import com.mca.yourapp.service.external.mocks.MocksConnector;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.mca.yourapp.conf.CacheConfig.GET_SIMILAR_PRODUCTS_CACHE;
 
 
 @Service
@@ -35,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
         return products;
     }
 
-    @Cacheable(value = GET_SIMILAR_PRODUCTS_CACHE)
     private List<ProductDetail> getSimilarProductsInternal(final String productId) {
         if (productId == null || mocksConnector.getProduct(productId) == null) {
             return null; // Sending null in order to allow method caching in this scenario

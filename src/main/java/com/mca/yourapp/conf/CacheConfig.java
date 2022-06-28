@@ -19,7 +19,7 @@ import java.time.Duration;
 public class CacheConfig {
     public static final String GET_PRODUCTS_IN_PARALLEL_CACHE = "getProducts";
     public static final String GET_SIMILAR_PRODUCT_IDS_CACHE = "similarProductIds";
-    public static final String GET_SIMILAR_PRODUCTS_CACHE = "similarProducts";
+    public static final String GET_PRODUCT_CACHE = "getProduct";
 
     /**
      * Default configuration for Redis in-memory cache
@@ -41,7 +41,7 @@ public class CacheConfig {
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return builder -> builder
-                .withCacheConfiguration(GET_SIMILAR_PRODUCTS_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)))
+                .withCacheConfiguration(GET_PRODUCT_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
                 .withCacheConfiguration(GET_SIMILAR_PRODUCT_IDS_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
                 .withCacheConfiguration(GET_PRODUCTS_IN_PARALLEL_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)));
     }

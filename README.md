@@ -7,6 +7,28 @@ http://localhost:5000/product/1/similar
 
 
 ## Run
+It's possible to run the application using docker or natively.
+
+### Run using docker
+First, run the redis cache server:
+```bash
+sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+```
+
+then build yourapp image and run it:
+```bash
+sudo docker build -t mca_yourapp .
+sudo docker run --network=host --name mca_yourapp_container mca_yourapp
+```
+
+If there are error there will be logged if option 'LOGS_ENABLED' is true in the code.
+See logs from container ssh over it
+```bash
+sudo docker exec -it `sudo docker ps -a | grep mca_yourapp | cut -d" " -f1` /bin/bash
+cat yourapp.log
+```
+
+### Run natively
 These ports must be available:
 - localhost:5000 -> API entrypoint
 - localhost:6379 -> Redis in memory cache default port

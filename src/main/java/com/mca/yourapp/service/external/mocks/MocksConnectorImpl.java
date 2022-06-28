@@ -75,8 +75,11 @@ public class MocksConnectorImpl implements MocksConnector {
     }
 
     @Override
+    @Cacheable(value = GET_PRODUCT_CACHE)
     public ProductDetailMock getProduct(final String productId) {
-        return getProductsInParallel(List.of(productId)).stream().findFirst().orElse(null);
+        final List<String> productIds = new ArrayList<>();
+        productIds.add(productId);
+        return getProductsInParallel(productIds).stream().findFirst().orElse(null);
     }
 
     private Flux<String> getProductAsyncHandlingErrors(final String productId) {
