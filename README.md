@@ -1,6 +1,7 @@
 # MCA backend dev test
 Products API using external [mocks module](https://github.com/dalogax/backendDevTest).
-Only one endpoint is available, example:
+Only one endpoint is available to fetch all the products similar to a given one.
+For example, we can request similar products to the product with id 1 using:
 ```
 http://localhost:5000/product/1/similar
 ```
@@ -15,13 +16,13 @@ First, run the redis cache server:
 sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
-then build yourapp image and run it:
+then build *yourapp* image and run it:
 ```bash
 sudo docker build -t mca_yourapp .
 sudo docker run --network=host --name mca_yourapp_container mca_yourapp
 ```
 
-If there are error there will be logged if option 'LOGS_ENABLED' is true in the code.
+Errors will be logged if the variable 'LOGS_ENABLED' is true in the code.
 See logs from container ssh over it
 ```bash
 sudo docker exec -it `sudo docker ps -a | grep mca_yourapp | cut -d" " -f1` /bin/bash
@@ -30,8 +31,8 @@ cat yourapp.log
 
 ### Run natively
 These ports must be available:
-- localhost:5000 -> API entrypoint
-- localhost:6379 -> Redis in memory cache default port
+- localhost:5000 -> API entry point
+- localhost:6379 -> Redis in-memory cache default port
 
 Install:
 - Java 17 (OpenJDK 17)
