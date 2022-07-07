@@ -16,7 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.mca.yourapp.service.impl.LogServiceImpl.LOGS_ENABLED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.parallel.ExecutionMode.SAME_THREAD;
 
 @ExtendWith(MockitoExtension.class)

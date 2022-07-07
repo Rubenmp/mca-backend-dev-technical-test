@@ -11,9 +11,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-import static com.mca.yourapp.conf.CacheConfig.*;
+import static com.mca.yourapp.conf.CacheConfig.GET_PRODUCTS_IN_PARALLEL_CACHE;
+import static com.mca.yourapp.conf.CacheConfig.GET_PRODUCT_CACHE;
+import static com.mca.yourapp.conf.CacheConfig.GET_SIMILAR_PRODUCT_IDS_CACHE;
 import static com.mca.yourapp.conf.MultiModuleConfig.EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS;
 import static com.mca.yourapp.service.utils.CollectionUtils.splitToListsWithSize;
 
@@ -44,11 +53,7 @@ public class MocksConnectorImpl implements MocksConnector {
         final String url = getSimilarProductIdsUrl(productId);
 
         try {
-            final String productIdsStr = webClient.get()
-                    .uri(url)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            final String productIdsStr = webClient.get().uri(url).retrieve().bodyToMono(String.class).block();
             return toProductIds(productIdsStr);
         } catch (Exception e) {
             logService.log(e);
@@ -66,8 +71,7 @@ public class MocksConnectorImpl implements MocksConnector {
             return List.of();
         }
 
-        return Arrays.stream(productIdsStr.substring(1, productIdsStr.length() - 1).split(PRODUCTS_SEPARATOR))
-                .filter(this::isValidProductId).toList();
+        return Arrays.stream(productIdsStr.substring(1, productIdsStr.length() - 1).split(PRODUCTS_SEPARATOR)).filter(this::isValidProductId).toList();
     }
 
     private String getSimilarProductIdsUrl(final String productId) {
@@ -85,12 +89,7 @@ public class MocksConnectorImpl implements MocksConnector {
     private Flux<String> getProductAsyncHandlingErrors(final String productId) {
         final String url = getProductUrl(productId);
 
-        return webClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .timeout(Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000))
-                .onErrorReturn("");
+        return webClient.get().uri(url).retrieve().bodyToFlux(String.class).timeout(Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000)).onErrorReturn("");
     }
 
 
@@ -138,10 +137,7 @@ public class MocksConnectorImpl implements MocksConnector {
     private List<ProductDetailMock> waitWithoutThreadLimit(final Collection<Flux<String>> productAsyncCalls) {
         final List<List<String>> products;
         try {
-            products = Flux.zip(
-                    productAsyncCalls,
-                    resultList -> Arrays.stream(resultList).map(String.class::cast).toList()
-            ).collectList().block();
+            products = Flux.zip(productAsyncCalls, resultList -> Arrays.stream(resultList).map(String.class::cast).toList()).collectList().block();
         } catch (Exception e) {
             logService.log(e);
             return List.of();
