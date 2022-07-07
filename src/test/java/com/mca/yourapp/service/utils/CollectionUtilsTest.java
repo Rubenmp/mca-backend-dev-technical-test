@@ -20,7 +20,7 @@ class CollectionUtilsTest {
 
         final List<List<Integer>> splitLists = splitToListsWithSize(initialList, partitionSize);
 
-        assertNotNull(splitLists);
+        assertNotNull(splitLists, "Output cannot be null");
         final int expectedLength = initialList.size() / partitionSize + 1;
         assertEquals(expectedLength, splitLists.size(), "Split lists size");
         assertEquals(List.of(1, 2, 3, 4), splitLists.get(0), "First list");
@@ -35,7 +35,7 @@ class CollectionUtilsTest {
 
         final List<List<Integer>> splitLists = splitToListsWithSize(initialList, partitionSize);
 
-        assertNotNull(splitLists);
+        assertNotNull(splitLists, "Output cannot be null");
         assertEquals(1, splitLists.size(), "Split lists size");
         assertEquals(initialList, splitLists.get(0), "Partitioned list");
     }
@@ -47,7 +47,7 @@ class CollectionUtilsTest {
 
         final List<List<Integer>> splitLists = splitToListsWithSize(initialList, partitionSize);
 
-        assertNotNull(splitLists);
+        assertNotNull(splitLists, "Output cannot be null");
         assertEquals(initialList.size(), splitLists.size(), "Split lists size");
         for (int i = 0; i < initialList.size(); ++i) {
             assertEquals(List.of(i + 1), splitLists.get(i), "Partitioned list number " + 1);
@@ -60,5 +60,13 @@ class CollectionUtilsTest {
 
         assertThrows(YourAppRuntimeException.class,
                 () -> splitToListsWithSize(initialList, 0));
+    }
+
+    @Test
+    void splitToListsWithSize_partitionSizeNegative() {
+        final List<Integer> initialList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        assertThrows(YourAppRuntimeException.class,
+                () -> splitToListsWithSize(initialList, -1));
     }
 }

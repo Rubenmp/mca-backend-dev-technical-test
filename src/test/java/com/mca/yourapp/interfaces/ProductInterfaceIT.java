@@ -33,10 +33,10 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         final List<String> allInputProductIds = List.of("1", "2");
 
         final Map<String, List<String>> similarProductIds = new HashMap<>();
-        for (final String productId : allInputProductIds) {
-            final ApiResponse response = getSimilarProductsRequest(productId);
+        for (final String inputProductId : allInputProductIds) {
+            final ApiResponse response = getSimilarProductsRequest(inputProductId);
             assertEquals(HttpStatus.OK, response.getStatus(), "Response status");
-            similarProductIds.put(productId, getProductIds(response));
+            similarProductIds.put(inputProductId, getProductIds(response));
         }
 
         assertArrayEquals(List.of("2", "3", "4").toArray(), similarProductIds.get("1").toArray());
@@ -60,7 +60,7 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         final ApiResponse response = getSimilarProductsRequest(productId);
         assertEquals(HttpStatus.OK, response.getStatus(), "Response status");
 
-        assertArrayEquals(List.of("100", "1000").toArray(), getProductIds(response).toArray(), "Product ids"); // Similar product ids [1,2,5]
+        assertArrayEquals(List.of("100", "1000").toArray(), getProductIds(response).toArray(), "Product ids");
     }
 
 
@@ -94,22 +94,22 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         clearCache();
 
         long startTime1 = System.nanoTime();
-        final ApiResponse product1Str = getSimilarProductsRequest(PRODUCT_ID_TO_USE_IN_CACHE);
+        final ApiResponse responseWithoutCache = getSimilarProductsRequest(PRODUCT_ID_TO_USE_IN_CACHE);
         long estimatedTime1 = System.nanoTime() - startTime1;
 
         long startTime2 = System.nanoTime();
-        final ApiResponse product2Str = getSimilarProductsRequest(PRODUCT_ID_TO_USE_IN_CACHE);
+        final ApiResponse responseWithCache = getSimilarProductsRequest(PRODUCT_ID_TO_USE_IN_CACHE);
         long estimatedTime2 = System.nanoTime() - startTime2;
 
-        assertEquals(HttpStatus.OK, product1Str.getStatus(), "Response1 status");
-        assertEquals(HttpStatus.OK, product2Str.getStatus(), "Response2 status");
+        assertEquals(HttpStatus.OK, responseWithoutCache.getStatus(), "Response without cache status");
+        assertEquals(HttpStatus.OK, responseWithCache.getStatus(), "Response with cache status");
 
-        final List<String> productIds1 = getProductIds(product1Str);
-        final List<String> productIds2 = getProductIds(product2Str);
-        assertArrayEquals(List.of("3", "100", "1000").toArray(), productIds1.toArray(), "Returned product ids");
-        assertEquals(productIds1, productIds2, "Products");
+        final List<String> productIdsWithoutCache = getProductIds(responseWithoutCache);
+        final List<String> productIdsWithCache = getProductIds(responseWithCache);
+        assertArrayEquals(List.of("3", "100", "1000").toArray(), productIdsWithoutCache.toArray(), "Returned product ids");
+        assertEquals(productIdsWithoutCache, productIdsWithCache, "Products");
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 20 * (1000000), "Second access must be faster than 20 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        assertTrue(estimatedTime2 < 35 * (1000000), "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
     }
 
 
@@ -129,7 +129,7 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         checkProductNotFoundResponse(product2Str);
 
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 20 * (1000000), "Second access must be faster than 20 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        assertTrue(estimatedTime2 < 35 * (1000000), "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
     }
 
     private void clearCache() {

@@ -28,6 +28,7 @@ class MocksConnectorIT extends IntegrationTestConfig {
         assertNotNull(product, "Product cannot be null");
         assertEquals(PRODUCT_ID, product.getId(), "Product id");
         assertEquals("Shirt", product.getName(), "Product name");
+        assertNotNull(product.getPrice(), "Product price");
         assertEquals("9.99", product.getPrice().toString(), "Product price");
         assertTrue(product.isAvailability(), "Product availability");
     }
@@ -59,6 +60,7 @@ class MocksConnectorIT extends IntegrationTestConfig {
     void getSimilarProductIds_happyPath_success() {
         final List<String> similarProductIds = mocksConnector.getSimilarProductIds(PRODUCT_ID);
 
+        assertNotNull(similarProductIds, "Product ids");
         assertArrayEquals(List.of("2", "3", "4").toArray(), similarProductIds.toArray(), "Product ids");
     }
 
@@ -66,6 +68,7 @@ class MocksConnectorIT extends IntegrationTestConfig {
     void getSimilarProductIds_invalidProductId_emptyList() {
         final List<String> similarProductIds = mocksConnector.getSimilarProductIds(INVALID_PRODUCT_ID);
 
+        assertNotNull(similarProductIds, "Product ids");
         assertArrayEquals(List.of().toArray(), similarProductIds.toArray(), "Product list must be empty");
     }
 }

@@ -58,6 +58,7 @@ class ProductServiceTest {
         productMock.setName("Product name");
         productMock.setPrice(19);
         productMock.setAvailability(false);
+
         return productMock;
     }
 
