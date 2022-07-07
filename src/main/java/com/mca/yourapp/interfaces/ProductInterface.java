@@ -1,7 +1,7 @@
 package com.mca.yourapp.interfaces;
 
-import com.mca.yourapp.service.ProductService;
 import com.mca.yourapp.interfaces.dto.ProductDetail;
+import com.mca.yourapp.service.ProductService;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class ProductInterface {
 
     /**
      * Similar products.
-     *
+     * <p>
      * It returns {@link org.springframework.http.ResponseEntity ResponseEntity<String>} due to the restriction
-     *  '404':
-     *     description: Product Not found
+     * '404':
+     * description: Product Not found
      * that makes strong typing counterproductive.
      * The response actually returns a list of {@link com.mca.yourapp.interfaces.dto.ProductDetail ProductDetail}
      * in json format.

@@ -17,7 +17,11 @@ import java.util.Map;
 
 import static com.mca.yourapp.interfaces.ProductInterface.GET_SIMILAR_PRODUCTS_URL;
 import static com.mca.yourapp.testconfig.IntegrationTestConfig.TEST_PROFILE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @ActiveProfiles(TEST_PROFILE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -1,8 +1,8 @@
 package com.mca.yourapp.service.impl;
 
-import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.ProductService;
+import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.external.mocks.MocksConnector;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;

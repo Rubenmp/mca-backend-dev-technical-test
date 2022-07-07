@@ -1,7 +1,7 @@
 package com.mca.yourapp.service.external.mocks;
 
-import com.mca.yourapp.testconfig.IntegrationTestConfig;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
+import com.mca.yourapp.testconfig.IntegrationTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +10,11 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static com.mca.yourapp.testconfig.IntegrationTestConfig.TEST_PROFILE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles(TEST_PROFILE)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
