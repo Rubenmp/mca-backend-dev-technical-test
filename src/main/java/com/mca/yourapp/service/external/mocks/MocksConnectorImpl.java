@@ -131,7 +131,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
         final Set<String> requestedProductIds = new HashSet<>(productIds.size());
         final List<Flux<String>> productAsyncCalls = new ArrayList<>();
-        for (final String productId : productIds) {
+        for (final String productId : productIds.stream().limit(MAX_PRODUCTS_TO_REQUEST).toList()) {
             if (productId != null && !productId.isEmpty() && !requestedProductIds.contains(productId)) {
                 requestedProductIds.add(productId);
                 productAsyncCalls.add(getProductAsyncHandlingErrors(productId));
