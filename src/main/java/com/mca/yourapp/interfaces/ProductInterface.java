@@ -26,16 +26,16 @@ public class ProductInterface {
 
 
     /**
-     * Similar products.
-     * <p>
-     * It returns {@link org.springframework.http.ResponseEntity ResponseEntity<String>} due to the restriction
+     * Similar products to the requested product
+     *
+     * @param productId required path parameter
+     * @return {@link org.springframework.http.ResponseEntity ResponseEntity<String>} due to the restriction
      * '404':
      * description: Product Not found
      * that makes strong typing counterproductive.
      * The response actually returns a list of {@link com.mca.yourapp.interfaces.dto.ProductDetail ProductDetail}
      * in json format.
-     *
-     * @param productId required path parameter
+     * If the product id does not exist, then HTTP status NOT_FOUND will be returned.
      */
     @GetMapping(value = GET_SIMILAR_PRODUCTS_URL, produces = "application/json")
     public ResponseEntity<String> getSimilarProducts(@PathVariable(required = true) String productId) {
