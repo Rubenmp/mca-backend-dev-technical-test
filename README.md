@@ -72,6 +72,9 @@ sudo docker compose up -d simulado influxdb grafana
 Then run all the tests with:
 ```bash
 ./gradlew test
+# or using docker:
+sudo docker build -f DockerfileTest -t mca_yourapp_test .
+sudo docker run --network=host --rm  mca_yourapp_test
 ```
 
 or only the unit tests:
