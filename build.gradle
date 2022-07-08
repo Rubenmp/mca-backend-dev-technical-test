@@ -11,6 +11,7 @@ sourceCompatibility = '17'
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
+		//extendsFrom converterProcessor
 	}
 }
 
@@ -35,6 +36,9 @@ dependencies {
 
 	// Rest calls
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
+
+	annotationProcessor 'fr.xebia.extras:selma-processor:1.0'
+	implementation 'fr.xebia.extras:selma:1.0'
 }
 
 tasks.named('test') {
