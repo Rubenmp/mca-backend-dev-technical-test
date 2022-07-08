@@ -16,6 +16,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,10 +35,10 @@ class ProductServiceTest {
 
     @Test
     void getSimilarProducts_happyPath_success() {
-        final List<ProductDetailMock> productDetails = SIMILAR_PRODUCT_IDS.stream().map(this::newProductDetailMock).toList();
+        final List<ProductDetailMock> inputProductDetails = SIMILAR_PRODUCT_IDS.stream().map(this::newProductDetailMock).toList();
         when(mocksConnector.getProduct(PRODUCT_ID)).thenReturn(newProductDetailMock(PRODUCT_ID));
         when(mocksConnector.getSimilarProductIds(PRODUCT_ID)).thenReturn(SIMILAR_PRODUCT_IDS);
-        when(mocksConnector.getProductsInParallel(SIMILAR_PRODUCT_IDS)).thenReturn(productDetails);
+        when(mocksConnector.getProductsInParallel(SIMILAR_PRODUCT_IDS)).thenReturn(inputProductDetails);
 
         List<ProductDetail> similarProducts = null;
         try {
@@ -43,15 +47,26 @@ class ProductServiceTest {
             fail(e.getMessage());
         }
 
-        assertNotNull(similarProducts);
-        assertEquals(productDetails.size(), similarProducts.size(), "Products size");
+        assertNotNull(similarProducts, "Similar products result");
+        verify(mocksConnector, times(1)).getProduct(any());
+        verify(mocksConnector, times(1)).getProduct(argThat(PRODUCT_ID::equals));
+        verify(mocksConnector, times(1)).getSimilarProductIds(any());
+        verify(mocksConnector, times(1)).getSimilarProductIds(argThat(PRODUCT_ID::equals));
+        verify(mocksConnector, times(1)).getProductsInParallel(any());
+        verify(mocksConnector, times(1)).getProductsInParallel(argThat(SIMILAR_PRODUCT_IDS::equals));
+
+        assertEquals(inputProductDetails.size(), similarProducts.size(), "Products size");
         assertEquals(SIMILAR_PRODUCT_IDS, similarProducts.stream().map(ProductDetail::getId).toList());
-        for (int i = 0; i < productDetails.size(); ++i) {
-            assertEquals(productDetails.get(i).getId(), similarProducts.get(i).getId(), "Product id");
-            assertEquals(productDetails.get(i).getName(), similarProducts.get(i).getName(), "Product name");
-            assertEquals(productDetails.get(i).getPrice(), similarProducts.get(i).getPrice(), "Product price");
-            assertEquals(productDetails.get(i).isAvailability(), similarProducts.get(i).isAvailability(), "Product availability");
+        for (int i = 0; i < inputProductDetails.size(); ++i) {
+            checkEqualProduct(inputProductDetails.get(i), similarProducts.get(i));
         }
+    }
+
+    private void checkEqualProduct(final ProductDetailMock actualProduct, final ProductDetail expectedProduct) {
+        assertEquals(actualProduct.getId(), expectedProduct.getId(), "Product id");
+        assertEquals(actualProduct.getName(), expectedProduct.getName(), "Product name");
+        assertEquals(actualProduct.getPrice(), expectedProduct.getPrice(), "Product price");
+        assertEquals(actualProduct.isAvailability(), expectedProduct.isAvailability(), "Product availability");
     }
 
     private ProductDetailMock newProductDetailMock(final String productId) {

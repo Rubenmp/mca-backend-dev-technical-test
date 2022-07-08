@@ -37,21 +37,21 @@ class SerializationServiceTest {
         checkValidProduct(result);
     }
 
-    private void checkValidProduct(final ProductDetailMock result) {
-        assertNotNull(result, "Deserialized result");
-        assertEquals("2", result.getId(), "Id");
-        assertEquals("Dress", result.getName(), "Name");
-        assertNotNull(result.getPrice(), "Price");
-        assertEquals("19.99", result.getPrice().toString(), "Price");
-        assertTrue(result.isAvailability(), "Availability");
+    private void checkValidProduct(final ProductDetailMock product) {
+        assertNotNull(product, "Product");
+        assertEquals("2", product.getId(), "Product id");
+        assertEquals("Dress", product.getName(), "Product name");
+        assertNotNull(product.getPrice(), "Product price");
+        assertEquals("19.99", product.getPrice().toString(), "Product price");
+        assertTrue(product.isAvailability(), "Product availability");
     }
 
 
     @Test
     void deserialize_invalidProductDetailMock_returnNull() {
-        final String serializedProductDetailMock = "{\"id\":\"2\",\"name\":\"Dress\",\"price\":19.99,\"availability\":treue}";
+        final String invalidSerializedProduct = "{\"id\":\"2\",\"name\":\"Dress\",\"price\":19.99,\"availability\":treue}";
 
-        final ProductDetailMock result = serializationService.deserialize(serializedProductDetailMock, ProductDetailMock.class);
+        final ProductDetailMock result = serializationService.deserialize(invalidSerializedProduct, ProductDetailMock.class);
 
         assertNull(result, "Deserialized result");
         verify(logService, times(1)).log(any());
@@ -60,9 +60,9 @@ class SerializationServiceTest {
 
     @Test
     void deserialize_invalidJson_returnNull() {
-        final String serializedProductDetailMock = "{invalid-json}";
+        final String invalidSerializedProduct = "{invalid-json}";
 
-        final ProductDetailMock result = serializationService.deserialize(serializedProductDetailMock, ProductDetailMock.class);
+        final ProductDetailMock result = serializationService.deserialize(invalidSerializedProduct, ProductDetailMock.class);
 
         assertNull(result, "Deserialized result");
         verify(logService, times(1)).log(any());
@@ -74,8 +74,8 @@ class SerializationServiceTest {
         final ProductDetailMock result = serializationService.deserialize(null, ProductDetailMock.class);
 
         assertNull(result, "Deserialized result");
-        verify(logService, times(1)).log(any());
-        verify(logService, times(1)).log(argThat(x -> x instanceof IllegalArgumentException));
+        verify(logService, times(0)).log(any());
+        verify(logService, times(0)).log(argThat(x -> x instanceof IllegalArgumentException));
     }
 
 
