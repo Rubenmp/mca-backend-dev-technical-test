@@ -89,6 +89,7 @@ public class MocksConnectorImpl implements MocksConnector {
         return BASE_MOCKS_MODULE_URL + "product/" + productId + "/similarids";
     }
 
+    
     @Override
     @Cacheable(value = GET_PRODUCT_CACHE)
     public ProductDetailMock getProduct(final String productId) {
@@ -117,6 +118,7 @@ public class MocksConnectorImpl implements MocksConnector {
     private String getProductUrl(final String productId) {
         return BASE_MOCKS_MODULE_URL + "product/" + productId;
     }
+
 
     @Override
     @Cacheable(value = GET_PRODUCTS_IN_PARALLEL_CACHE)

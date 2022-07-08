@@ -12,7 +12,7 @@ public interface MocksConnector {
     List<String> getSimilarProductIds(final String productId);
 
     /**
-     * Returns the product detail for a given productId
+     * Returns the product detail for a given productId or null if the product does not exist.
      */
     ProductDetailMock getProduct(final String productId);
 
