@@ -4,7 +4,6 @@ import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.SerializationService;
 import com.mca.yourapp.service.dto.LogType;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
-import io.netty.handler.timeout.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -93,10 +92,10 @@ public class MocksConnectorImpl implements MocksConnector {
         final Duration timeout = Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000);
 
         return webClient.get().uri(url).retrieve().bodyToFlux(String.class)
-                .timeout(timeout, e -> logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was a timeout for productId \"" + productId + "\""))
+                .timeout(timeout)
                 .onErrorContinue((e, i) -> {
-                    if (!(e instanceof TimeoutException)) {
-                        logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\"");
+                    if (e != null) {
+                        logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\":" + e.getMessage());
                     }
                 })
                 .onErrorReturn("");

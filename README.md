@@ -63,7 +63,7 @@ It is possible to remove cache data using
 redis-cli FLUSHDB # If redis is installed
 # In case of Redis executed by docker:
 sudo docker ps # Search redis container id
-docker exec -it <redis_container_id> bash # Connect to the redis container
+sudo docker exec -it <redis_container_id> bash # Connect to the redis container
 redis-cli FLUSHDB # Run this command inside the container
 ```
 
