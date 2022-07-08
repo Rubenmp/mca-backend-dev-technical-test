@@ -11,7 +11,7 @@ import java.time.Duration;
 
 @Configuration
 public class MultiModuleConfig {
-    public static final int EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS = 8000;
+    public static final int EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS = 10000;
 
     /**
      * Bean used to send async rest requests to another systems with default timeout.
@@ -25,16 +25,6 @@ public class MultiModuleConfig {
                 .build();
     }
 
-    /**
-     * There is a current issue with this connector: <a href="https://github.com/spring-projects/spring-framework/issues/22142">...</a>
-     * Supposedly it is solved using
-     *
-     * ReactorClientHttpConnector sharedConnector = new ReactorClientHttpConnector(
-     *     HttpClient.create().runOn(LoopResources.create("reactor-webclient")
-     * )
-     *
-     * but it does not work. It is still better to use this async web client approach than blocking calls with rest template, though.
-     * */
     private ReactorClientHttpConnector getReactorClientHttpConnector() {
         return new ReactorClientHttpConnector(HttpClient.newConnection().responseTimeout(Duration.ofMillis(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS)));
     }
