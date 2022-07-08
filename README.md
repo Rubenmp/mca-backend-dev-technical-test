@@ -15,7 +15,7 @@ First, run the redis cache server:
 ```bash
 sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with Redis version 6.2.7
 # Another possibility is to run it in detached mode:
-sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+# sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 then build *yourapp* image and run it:
@@ -23,15 +23,23 @@ then build *yourapp* image and run it:
 sudo docker build -f ./dockerfiles/DockerfileRun -t mca_yourapp .
 sudo docker run --network=host --rm mca_yourapp
 # Another possibility is to run it in detached mode:
-sudo docker run --network=host -d --name mca_yourapp_container mca_yourapp
+# sudo docker run --network=host -d --name mca_yourapp_container mca_yourapp
 ```
 
-Errors will be logged if the variable 'LOGS_ENABLED' is true in the code.
+Errors will be logged in file *yourapp.log*.
 See logs from container ssh over it
 ```bash
 sudo docker exec -it `sudo docker ps -a | grep mca_yourapp | cut -d" " -f1` /bin/bash
 cat yourapp.log
 ```
+
+It is possible to remove cache data using
+```bash
+sudo docker ps # Search redis container id
+sudo docker exec -it <redis_container_id> bash # Connect to the redis container
+redis-cli FLUSHDB # Run this command inside the container
+```
+
 
 ### Run natively
 These ports must be available:
@@ -60,11 +68,7 @@ then run
 
 It is possible to remove cache data using
 ```bash
-redis-cli FLUSHDB # If redis is installed
-# In case of Redis executed by docker:
-sudo docker ps # Search redis container id
-sudo docker exec -it <redis_container_id> bash # Connect to the redis container
-redis-cli FLUSHDB # Run this command inside the container
+redis-cli FLUSHDB
 ```
 
 ## Tests
@@ -77,18 +81,27 @@ Integration tests require module Mocks (in project [*backendDevTest*](https://gi
 sudo docker compose up -d simulado influxdb grafana
 ```
 
-Then run all the tests with:
+### Run tests with docker
+Run all the tests with:
 ```bash
-./gradlew test
-# or using docker:
 sudo docker build -f ./dockerfiles/DockerfileTest -t mca_yourapp_test .
 sudo docker run --network=host --rm mca_yourapp_test
 ```
 
 or only the unit tests:
 ```bash
- ./gradlew test --tests '*Test'
- # or using docker:
 sudo docker build -f ./dockerfiles/DockerfileUnitTest -t mca_yourapp_unit_test .
 sudo docker run --network=host --rm mca_yourapp_unit_test
+```
+
+
+### Run tests natively
+Run all the tests with:
+```bash
+./gradlew test
+```
+
+or only the unit tests:
+```bash
+./gradlew test --tests '*Test'
 ```
