@@ -1,6 +1,5 @@
 package com.mca.yourapp.service.impl;
 
-import com.mca.yourapp.interfaces.converter.InterfaceDtoMapper;
 import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.ProductService;
 import com.mca.yourapp.service.dto.ProductDetail;
@@ -29,18 +28,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDetail> getSimilarProducts(final String productId) throws EntityNotFound {
-        final List<ProductDetail> products = getSimilarProductsInternal(productId);
-
-        if (products == null) {
-            throw new EntityNotFound("Input product \"" + productId + "\" not found.");
-        }
-
-        return products;
-    }
-
-    private List<ProductDetail> getSimilarProductsInternal(final String productId) {
         if (productId == null || mocksConnector.getProduct(productId) == null) {
-            return null; // Sending null in order to allow method caching in this scenario
+            throw new EntityNotFound("Input product \"" + productId + "\" not found.");
         }
 
         final List<String> productIds = mocksConnector.getSimilarProductIds(productId);
