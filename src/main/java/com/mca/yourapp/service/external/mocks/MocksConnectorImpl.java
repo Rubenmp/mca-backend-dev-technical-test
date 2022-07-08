@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static com.mca.yourapp.conf.CacheConfig.GET_PRODUCTS_IN_PARALLEL_CACHE;
@@ -32,7 +34,7 @@ public class MocksConnectorImpl implements MocksConnector {
     private static final String PRODUCTS_SEPARATOR = ",";
     private static final int MAX_PRODUCTS_TO_REQUEST = 1000;
     private static final int MAX_THREADS_PER_REQUEST = 4;
-    private static final int MOCKS_CALL_TIMEOUT_IN_MILLISECONDS = 7500; // The slowest call is getProduct for id "1000", 6 seconds. This value should not be less than that.
+    private static final int MOCKS_CALL_TIMEOUT_IN_MILLISECONDS = 7000; // The slowest call is getProduct for id "1000", 6 seconds. This value should not be less than that.
     private static final Duration API_CALL_TIMEOUT = Duration.ofSeconds(MOCKS_CALL_TIMEOUT_IN_MILLISECONDS / 1000);
 
 
@@ -57,7 +59,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
         try {
             final String productIdsStr = webClient.get().uri(url).retrieve().bodyToMono(String.class)
-                    .timeout(API_CALL_TIMEOUT)
+                    .timeout(API_CALL_TIMEOUT, Mono.error(new TimeoutException("getSimilarProductIds response took longer than timeout (in seconds): " + API_CALL_TIMEOUT.getSeconds())))
                     .onErrorContinue((e, i) -> {
                         final String exceptionMessage = e == null ? null : e.getMessage();
                         logService.log(LogType.ERROR, "In getSimilarProductIds there was an exception for productId \"" + productId + "\":" + exceptionMessage);
@@ -99,7 +101,7 @@ public class MocksConnectorImpl implements MocksConnector {
         final String url = getProductUrl(productId);
 
         return webClient.get().uri(url).retrieve().bodyToFlux(String.class)
-                .timeout(API_CALL_TIMEOUT)
+                .timeout(API_CALL_TIMEOUT, Mono.error(new TimeoutException("getProductAsyncHandlingErrors response took longer than timeout (in seconds): " + API_CALL_TIMEOUT.getSeconds())))
                 .onErrorContinue((e, i) -> {
                     final String exceptionMessage = e == null ? null : e.getMessage();
                     logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\":" + exceptionMessage);
