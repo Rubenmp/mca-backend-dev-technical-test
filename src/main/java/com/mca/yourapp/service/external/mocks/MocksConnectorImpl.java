@@ -33,6 +33,8 @@ public class MocksConnectorImpl implements MocksConnector {
     private static final String PRODUCTS_SEPARATOR = ",";
     private static final int MAX_PRODUCTS_TO_REQUEST = 1000;
     private static final int MAX_THREADS_PER_REQUEST = 4;
+    private static final Duration API_CALL_TIMEOUT = Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000);
+
 
     @Autowired
     private WebClient webClient;
@@ -54,7 +56,13 @@ public class MocksConnectorImpl implements MocksConnector {
         final String url = getSimilarProductIdsUrl(productId);
 
         try {
-            final String productIdsStr = webClient.get().uri(url).retrieve().bodyToMono(String.class).block();
+            final String productIdsStr = webClient.get().uri(url).retrieve().bodyToMono(String.class)
+                    .timeout(API_CALL_TIMEOUT)
+                    .onErrorContinue((e, i) -> {
+                        final String exceptionMessage = e == null ? null : e.getMessage();
+                        logService.log(LogType.ERROR, "In getSimilarProductIds there was an exception for productId \"" + productId + "\":" + exceptionMessage);
+                    })
+                    .onErrorReturn("").block();
             return toProductIds(productIdsStr);
         } catch (Exception e) {
             logService.log(e);
@@ -89,14 +97,12 @@ public class MocksConnectorImpl implements MocksConnector {
 
     private Flux<String> getProductAsyncHandlingErrors(final String productId) {
         final String url = getProductUrl(productId);
-        final Duration timeout = Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000);
 
         return webClient.get().uri(url).retrieve().bodyToFlux(String.class)
-                .timeout(timeout)
+                .timeout(API_CALL_TIMEOUT)
                 .onErrorContinue((e, i) -> {
-                    if (e != null) {
-                        logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\":" + e.getMessage());
-                    }
+                    final String exceptionMessage = e == null ? null : e.getMessage();
+                    logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\":" + exceptionMessage);
                 })
                 .onErrorReturn("");
     }
