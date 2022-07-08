@@ -8,5 +8,4 @@ import java.util.List;
 @Mapper
 public interface InterfaceDtoMapper {
     List<ProductDetail> toProductDetails(final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts);
-
 }

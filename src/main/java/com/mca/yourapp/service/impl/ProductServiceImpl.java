@@ -1,11 +1,14 @@
 package com.mca.yourapp.service.impl;
 
+import com.mca.yourapp.interfaces.converter.InterfaceDtoMapper;
 import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.ProductService;
 import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.external.mocks.MocksConnector;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
+import com.mca.yourapp.service.utils.converter.ServiceDtoMapper;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
+import fr.xebia.extras.selma.Selma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private LogService logService;
+
+    final ServiceDtoMapper dtoMapper = Selma.builder(ServiceDtoMapper.class).build();
+
 
     @Override
     public List<ProductDetail> getSimilarProducts(final String productId) throws EntityNotFound {
@@ -40,21 +46,6 @@ public class ProductServiceImpl implements ProductService {
         final List<String> productIds = mocksConnector.getSimilarProductIds(productId);
         final List<ProductDetailMock> returnedProducts = mocksConnector.getProductsInParallel(productIds);
 
-        return toProductDetails(returnedProducts);
-    }
-
-
-    private List<ProductDetail> toProductDetails(final List<ProductDetailMock> returnedProducts) {
-        return returnedProducts.stream().map(this::toProductDetails).toList();
-    }
-
-    private ProductDetail toProductDetails(final ProductDetailMock product) {
-        final ProductDetail productDetail = new ProductDetail();
-        productDetail.setId(product.getId());
-        productDetail.setName(product.getName());
-        productDetail.setPrice(product.getPrice());
-        productDetail.setAvailability(product.isAvailability());
-
-        return productDetail;
+        return dtoMapper.toProductDetails(returnedProducts);
     }
 }
