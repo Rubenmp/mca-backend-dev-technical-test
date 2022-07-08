@@ -1,6 +1,6 @@
 package com.mca.yourapp.interfaces;
 
-import com.mca.yourapp.interfaces.converter.InterfaceDtoMapper;
+import com.mca.yourapp.interfaces.mapper.InterfaceDtoMapper;
 import com.mca.yourapp.service.ProductService;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import fr.xebia.extras.selma.Selma;
@@ -22,7 +22,7 @@ public class ProductInterface {
     @Autowired
     private ProductService productService;
 
-    final InterfaceDtoMapper dtoMapper = Selma.builder(InterfaceDtoMapper.class).build();
+    final InterfaceDtoMapper interfaceDtoMapper = Selma.builder(InterfaceDtoMapper.class).build();
 
 
     /**
@@ -41,7 +41,7 @@ public class ProductInterface {
     public ResponseEntity<String> getSimilarProducts(@PathVariable(required = true) String productId) {
         try {
             final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts = productService.getSimilarProducts(productId);
-            return new ResponseEntity<>(dtoMapper.toProductDetails(similarProducts).toString(), OK);
+            return new ResponseEntity<>(interfaceDtoMapper.toProductDetails(similarProducts).toString(), OK);
         } catch (final EntityNotFound e) {
             return new ResponseEntity<>("{\"message\":\"Product Not found\"}", HttpStatus.NOT_FOUND);
         }

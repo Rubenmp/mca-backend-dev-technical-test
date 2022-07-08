@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.mca.yourapp.conf.CacheConfig.GET_PRODUCTS_IN_PARALLEL_CACHE;
 import static com.mca.yourapp.conf.CacheConfig.GET_PRODUCT_CACHE;
@@ -94,12 +95,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
 
     private ProductDetailMock toProduct(final String productStr) {
-        final ProductDetailMock product = serializationService.deserialize(productStr, ProductDetailMock.class);
-        if (product == null) {
-            logService.log(LogType.WARNING, "Invalid product received from mocks service: \"" + productStr + "\"");
-        }
-
-        return product;
+        return serializationService.deserialize(productStr, ProductDetailMock.class);
     }
 
     private String getProductUrl(final String productId) {
@@ -126,7 +122,18 @@ public class MocksConnectorImpl implements MocksConnector {
             }
         }
 
-        return wait(productAsyncCalls);
+        final List<ProductDetailMock> receivedProducts = wait(productAsyncCalls);
+        if (receivedProducts.size() < requestedProductIds.size()) {
+            logMissingProductIds(requestedProductIds, receivedProducts);
+        }
+
+        return receivedProducts;
+    }
+
+    private void logMissingProductIds(Set<String> requestedProductIds, List<ProductDetailMock> receivedProducts) {
+        final Set<String> receivedProductIds = receivedProducts.stream().map(ProductDetailMock::getId).collect(Collectors.toSet());
+        final List<String> missingProductIds = requestedProductIds.stream().filter(id -> !receivedProductIds.contains(id)).toList();
+        logService.log(LogType.WARNING, "It was not possible to getProducts \"" + String.join("\",\"", missingProductIds) + "\" in mocks connector.");
     }
 
     private List<ProductDetailMock> wait(final List<Flux<String>> productAsyncCalls) {

@@ -17,6 +17,9 @@ public class SerializationServiceImpl implements SerializationService {
     private LogService logService;
 
     public <T> T deserialize(final String data, final Class<T> targetClass) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
         final ObjectMapper mapper = new ObjectMapper();
 
         try {

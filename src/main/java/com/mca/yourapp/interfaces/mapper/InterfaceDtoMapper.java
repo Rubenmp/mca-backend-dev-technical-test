@@ -1,4 +1,4 @@
-package com.mca.yourapp.interfaces.converter;
+package com.mca.yourapp.interfaces.mapper;
 
 import com.mca.yourapp.interfaces.dto.ProductDetail;
 import fr.xebia.extras.selma.Mapper;

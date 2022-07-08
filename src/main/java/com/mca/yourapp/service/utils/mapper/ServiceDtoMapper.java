@@ -1,4 +1,4 @@
-package com.mca.yourapp.service.utils.converter;
+package com.mca.yourapp.service.utils.mapper;
 
 import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;

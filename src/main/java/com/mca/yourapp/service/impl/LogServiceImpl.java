@@ -25,7 +25,7 @@ public class LogServiceImpl implements LogService {
     private static final String LOG_TYPE_INIT_CHARACTER = "[";
     private static final String LOG_TYPE_END_CHAR = "]";
     private static final String LOG_INIT_MESSAGE_CHAR = ": ";
-    public static final boolean LOGS_ENABLED = false;
+    public static final boolean LOGS_ENABLED = true;
 
     @Override
     public void log(final LogType type, final String message) {
