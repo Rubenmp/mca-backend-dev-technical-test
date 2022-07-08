@@ -29,7 +29,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
 
 	// Rest calls
-	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.0'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.1'
 
 	annotationProcessor 'fr.xebia.extras:selma-processor:1.0'
 	implementation 'fr.xebia.extras:selma:1.0'
