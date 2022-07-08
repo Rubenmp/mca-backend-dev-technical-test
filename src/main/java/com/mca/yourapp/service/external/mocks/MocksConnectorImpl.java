@@ -4,9 +4,7 @@ import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.SerializationService;
 import com.mca.yourapp.service.dto.LogType;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
-import com.mca.yourapp.service.utils.exception.YourAppRuntimeException;
-import io.netty.channel.ChannelException;
-import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.TimeoutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -94,14 +92,12 @@ public class MocksConnectorImpl implements MocksConnector {
         final String url = getProductUrl(productId);
         final Duration timeout = Duration.ofSeconds(EXTERNAL_API_CALL_TIMEOUT_IN_MILLISECONDS / 1000);
 
-        return webClient.get().uri(url).retrieve().bodyToFlux(String.class).timeout(timeout, (e) -> {
-                    //System.err.println("Error in getProductAsyncHandlingErrors fallback for product id \"" + productId + "\"");
-                })
-                /*.doOnError(Exception.class, e -> {
-                    logService.log(LogType.ERROR, "It was not possible to getProduct with id \"" + productId + "\": " + Arrays.toString(e.getStackTrace()));
-                })*/
-                .onErrorContinue((e, i)->{
-                    //System.err.println("Error in getProductAsyncHandlingErrors for product id \"" + productId + "\"");
+        return webClient.get().uri(url).retrieve().bodyToFlux(String.class)
+                .timeout(timeout, e -> logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was a timeout for productId \"" + productId + "\""))
+                .onErrorContinue((e, i) -> {
+                    if (!(e instanceof TimeoutException)) {
+                        logService.log(LogType.ERROR, "In getProductAsyncHandlingErrors there was an exception for productId \"" + productId + "\"");
+                    }
                 })
                 .onErrorReturn("");
     }
