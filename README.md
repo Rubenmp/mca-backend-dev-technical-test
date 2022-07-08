@@ -9,6 +9,7 @@ http://localhost:5000/product/1/similar
 
 ## Run
 It's possible to run the application using docker or natively.
+The errors will be logged in file *yourapp.log*.
 
 ### Run using docker
 First, run the redis cache server:
@@ -26,17 +27,15 @@ sudo docker run --network=host --rm mca_yourapp
 # sudo docker run --network=host -d --name mca_yourapp_container mca_yourapp
 ```
 
-Errors will be logged in file *yourapp.log*.
-See logs from container ssh over it
+See logs from container by ssh over it
 ```bash
-sudo docker exec -it `sudo docker ps -a | grep mca_yourapp | cut -d" " -f1` /bin/bash
+sudo docker exec -it `sudo docker ps --format '{{.ID}}' --filter ancestor=mca_yourapp | tail -1` /bin/bash
 cat yourapp.log
 ```
 
-It is possible to remove cache data using
+It is possible to remove cache data inside the redis container using
 ```bash
-sudo docker ps # Search redis container id
-sudo docker exec -it <redis_container_id> bash # Connect to the redis container
+sudo docker exec -it `sudo docker ps --format '{{.ID}}' --filter ancestor=redis/redis-stack-server:latest | tail -1` /bin/bash
 redis-cli FLUSHDB # Run this command inside the container
 ```
 
