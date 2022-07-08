@@ -13,14 +13,14 @@ It's possible to run the application using docker or natively.
 ### Run using docker
 First, run the redis cache server:
 ```bash
-sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest
+sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with Redis version 6.2.7
 # Another possibility is to run it in detached mode:
 sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 then build *yourapp* image and run it:
 ```bash
-sudo docker build -t mca_yourapp .
+sudo docker build -f ./dockerfiles/DockerfileRun -t mca_yourapp .
 sudo docker run --network=host --rm mca_yourapp
 # Another possibility is to run it in detached mode:
 sudo docker run --network=host -d --name mca_yourapp_container mca_yourapp
@@ -81,11 +81,14 @@ Then run all the tests with:
 ```bash
 ./gradlew test
 # or using docker:
-sudo docker build -f DockerfileTest -t mca_yourapp_test .
+sudo docker build -f ./dockerfiles/DockerfileTest -t mca_yourapp_test .
 sudo docker run --network=host --rm mca_yourapp_test
 ```
 
 or only the unit tests:
 ```bash
  ./gradlew test --tests '*Test'
+ # or using docker:
+sudo docker build -f ./dockerfiles/DockerfileUnitTest -t mca_yourapp_unit_test .
+sudo docker run --network=host --rm mca_yourapp_unit_test
 ```

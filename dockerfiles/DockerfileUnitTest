@@ -1,0 +1,6 @@
+ARG isUnitTest
+FROM gradle:7.4.2-jdk17 AS buildd
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+ENTRYPOINT ["gradle", "test", "--no-daemon", "--tests", "*Test"]
+
