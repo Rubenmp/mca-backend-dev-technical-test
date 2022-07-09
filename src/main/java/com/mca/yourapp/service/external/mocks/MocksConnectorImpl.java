@@ -150,10 +150,10 @@ public class MocksConnectorImpl implements MocksConnector {
         return Collections.unmodifiableList(receivedProducts);
     }
 
-    private void logMissingProductIds(Set<String> requestedProductIds, List<ProductDetailMock> receivedProducts) {
+    private void logMissingProductIds(final Set<String> requestedProductIds, final List<ProductDetailMock> receivedProducts) {
         final Set<String> receivedProductIds = receivedProducts.stream().map(ProductDetailMock::getId).collect(Collectors.toSet());
         final List<String> missingProductIds = requestedProductIds.stream().filter(id -> !receivedProductIds.contains(id)).toList();
-        logService.log(LogType.WARNING, "It was not possible to getProducts \"" + String.join("\",\"", missingProductIds) + "\" in mocks connector.");
+        logService.log(LogType.WARNING, "It was not possible to getProducts [\"" + String.join("\",\"", missingProductIds) + "\"] in mocks connector.");
     }
 
     private List<ProductDetailMock> wait(final List<Flux<String>> productAsyncCalls) {
