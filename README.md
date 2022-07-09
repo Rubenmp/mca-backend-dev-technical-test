@@ -14,7 +14,7 @@ The errors will be logged in file *yourapp.log*.
 ### Run using docker
 First, run the redis cache server:
 ```bash
-sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with Redis version 6.2.7
+sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with version 6.2.7
 # Another possibility is to run it in detached mode:
 # sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
