@@ -17,24 +17,24 @@ public class CustomCacheErrorHandler implements CacheErrorHandler {
     private final LogService logService = new LogServiceImpl();
 
     @Override
-    public void handleCacheGetError(RuntimeException e, Cache cache, Object o) {
-        logWarning("Error with cache get method: " + e.getMessage());
+    public void handleCacheGetError(RuntimeException exception, Cache cache, Object key) {
+        logWarning("Error with cache get method: " + exception.getMessage());
     }
 
 
     @Override
-    public void handleCachePutError(RuntimeException e, Cache cache, Object o, Object o1) {
-        logWarning("Error with cache put method: " + e.getMessage());
+    public void handleCachePutError(RuntimeException exception, Cache cache, Object key, Object value) {
+        logWarning("Error with cache put method: " + exception.getMessage());
     }
 
     @Override
-    public void handleCacheEvictError(RuntimeException e, Cache cache, Object o) {
-        logWarning("Error with cache evict method: " + e.getMessage());
+    public void handleCacheEvictError(RuntimeException exception, Cache cache, Object key) {
+        logWarning("Error with cache evict method: " + exception.getMessage());
     }
 
     @Override
-    public void handleCacheClearError(RuntimeException e, Cache cache) {
-        logWarning("Error with cache clear method: " + e.getMessage());
+    public void handleCacheClearError(RuntimeException exception, Cache cache) {
+        logWarning("Error with cache clear method: " + exception.getMessage());
     }
 
     private void logWarning(final String message) {
