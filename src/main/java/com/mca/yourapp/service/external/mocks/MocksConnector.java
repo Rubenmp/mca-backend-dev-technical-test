@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MocksConnector {
     /**
-     * List of similar product ids to a given one ordered by similarity
+     * List of similar product ids to a given one sorted by similarity (descending)
      */
     List<String> getSimilarProductIds(@Nullable String productId);
 

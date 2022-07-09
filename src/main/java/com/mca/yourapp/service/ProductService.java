@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductService {
     /**
-     *
+     * Return the products information related to a given product sorted by similarity (descending)
      * */
     List<ProductDetail> getSimilarProducts(@Nullable String productId) throws EntityNotFound;
 }
