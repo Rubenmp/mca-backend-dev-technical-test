@@ -13,12 +13,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mca.yourapp.service.utils.PreconditionUtils.requireNotNull;
+
 @Service
 public class SerializationServiceImpl implements SerializationService {
     @Autowired
     private LogService logService;
 
     public <T> T deserialize(@Nullable final String data, @NonNull final Class<T> targetClass) {
+        requireNotNull(targetClass, "Target class must be provided.");
         if (data == null || data.isEmpty()) {
             return null;
         }
@@ -34,6 +37,7 @@ public class SerializationServiceImpl implements SerializationService {
 
     @Override
     public <T> List<T> deserializeList(@Nullable final String data, @NonNull final Class<T> targetClass) {
+        requireNotNull(targetClass, "Target class must be provided.");
         if (data == null || !data.startsWith("[")) {
             return List.of();
         }

@@ -71,6 +71,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public void log(@NonNull final Exception exception) {
+        requireNotNull(exception, "Exception must be provided.");
         final String logMessage = exception.getStackTrace() != null ? Arrays.toString(exception.getStackTrace()) : exception.getMessage();
         log(LogType.ERROR, logMessage);
     }
