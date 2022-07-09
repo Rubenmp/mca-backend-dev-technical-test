@@ -2,7 +2,9 @@ package com.mca.yourapp.conf;
 
 
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -16,7 +18,7 @@ import java.time.Duration;
  */
 @Configuration
 @EnableCaching
-public class CacheConfig {
+public class CacheConfig extends CachingConfigurerSupport {
     public static final String GET_PRODUCTS_IN_PARALLEL_CACHE = "getProducts";
     public static final String GET_SIMILAR_PRODUCT_IDS_CACHE = "similarProductIds";
     public static final String GET_PRODUCT_CACHE = "getProduct";
@@ -36,12 +38,21 @@ public class CacheConfig {
 
     /**
      * Increased granularity for each Redis cache, specifying ttl (time-to-live)
-     * */
+     */
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         return builder -> builder
                 .withCacheConfiguration(GET_PRODUCT_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)))
                 .withCacheConfiguration(GET_SIMILAR_PRODUCT_IDS_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(60)))
                 .withCacheConfiguration(GET_PRODUCTS_IN_PARALLEL_CACHE, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(10)));
+    }
+
+    /**
+     * This custom cache error handler allow us to use the system even when
+     * Redis cache is not available.
+     * */
+    @Override
+    public CacheErrorHandler errorHandler() {
+        return new CustomCacheErrorHandler();
     }
 }

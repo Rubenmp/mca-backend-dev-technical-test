@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ProductInterfaceIT extends IntegrationTestConfig {
     private static final String INVALID_PRODUCT_ID = "-1";
     private static final String PRODUCT_ID_TO_USE_IN_CACHE = "2";
+    private static final int NANO_TO_MILLISECONDS_DIVIDER = 1000000;
 
     @Autowired
     private SerializationService serializationService;
@@ -113,7 +114,8 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         assertArrayEquals(List.of("3", "100", "1000").toArray(), productIdsWithoutCache.toArray(), "Returned product ids");
         assertEquals(productIdsWithoutCache, productIdsWithCache, "Products");
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 35 * (1000000), "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        String cacheMessage = "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2 / NANO_TO_MILLISECONDS_DIVIDER + " milliseconds";
+        assertTrue(estimatedTime2 < 35 * (NANO_TO_MILLISECONDS_DIVIDER), cacheMessage);
     }
 
 
@@ -122,18 +124,19 @@ class ProductInterfaceIT extends IntegrationTestConfig {
         clearCache();
 
         long startTime1 = System.nanoTime();
-        final ApiResponse product1Str = getSimilarProductsRequest(INVALID_PRODUCT_ID);
+        final ApiResponse productWithoutCacheStr = getSimilarProductsRequest(INVALID_PRODUCT_ID);
         long estimatedTime1 = System.nanoTime() - startTime1;
 
         long startTime2 = System.nanoTime();
-        final ApiResponse product2Str = getSimilarProductsRequest(INVALID_PRODUCT_ID);
+        final ApiResponse productWithCacheStr = getSimilarProductsRequest(INVALID_PRODUCT_ID);
         long estimatedTime2 = System.nanoTime() - startTime2;
 
-        checkProductNotFoundResponse(product1Str);
-        checkProductNotFoundResponse(product2Str);
+        checkProductNotFoundResponse(productWithoutCacheStr);
+        checkProductNotFoundResponse(productWithCacheStr);
 
         assertTrue(estimatedTime2 < estimatedTime1, "Cache must improve response time");
-        assertTrue(estimatedTime2 < 35 * (1000000), "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2/1000000 + " milliseconds");
+        String cacheMessage = "Second access must be faster than 35 milliseconds. Actual time: " + estimatedTime2 / NANO_TO_MILLISECONDS_DIVIDER + " milliseconds";
+        assertTrue(estimatedTime2 < 35 * (NANO_TO_MILLISECONDS_DIVIDER), cacheMessage);
     }
 
     private void clearCache() {
