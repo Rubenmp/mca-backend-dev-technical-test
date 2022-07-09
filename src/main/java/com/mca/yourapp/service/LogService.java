@@ -8,9 +8,18 @@ import java.util.List;
 
 
 public interface LogService {
+    /**
+     * Log any log type with any not null message.
+     * */
     void log(@NonNull LogType type, @NonNull String message);
 
+    /**
+     * Log an error with the exception stack trace
+     * */
     void log(@NonNull Exception exception);
 
+    /**
+     * Return all logs sorted by date (ascending)
+     * */
     List<Log> getLogs();
 }

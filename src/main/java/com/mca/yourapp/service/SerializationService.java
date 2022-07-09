@@ -20,5 +20,9 @@ public interface SerializationService {
      */
     <T> T deserialize(@Nullable String data, @NonNull Class<T> targetClass);
 
+    /**
+     * Transform json based string {@param data} into a list of objects with class {@param targetClass}
+     * @see SerializationService#deserialize(String, Class)  deserialize
+     * */
     <T> List<T> deserializeList(@Nullable String data, @NonNull Class<T> targetClass);
 }

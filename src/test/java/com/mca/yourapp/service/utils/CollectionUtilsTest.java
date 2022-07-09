@@ -1,6 +1,5 @@
 package com.mca.yourapp.service.utils;
 
-import com.mca.yourapp.service.utils.exception.YourAppRuntimeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,7 +59,7 @@ class CollectionUtilsTest {
     void splitToListsWithSize_partitionSizeZero() {
         final List<Integer> initialList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        assertThrows(YourAppRuntimeException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> splitToListsWithSize(initialList, 0));
     }
 
@@ -68,7 +67,7 @@ class CollectionUtilsTest {
     void splitToListsWithSize_partitionSizeNegative() {
         final List<Integer> initialList = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        assertThrows(YourAppRuntimeException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> splitToListsWithSize(initialList, -1));
     }
 }
