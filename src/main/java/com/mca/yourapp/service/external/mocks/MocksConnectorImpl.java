@@ -66,7 +66,7 @@ public class MocksConnectorImpl implements MocksConnector {
                         logService.log(LogType.ERROR, "In getSimilarProductIds there was an exception for productId \"" + productId + "\":" + exceptionMessage);
                     })
                     .onErrorReturn("").block();
-            return toProductIds(productIdsStr);
+            return Collections.unmodifiableList(toProductIds(productIdsStr));
         } catch (final Exception e) {
             logService.log(e);
             return List.of();
@@ -147,7 +147,7 @@ public class MocksConnectorImpl implements MocksConnector {
             logMissingProductIds(requestedProductIds, receivedProducts);
         }
 
-        return receivedProducts;
+        return Collections.unmodifiableList(receivedProducts);
     }
 
     private void logMissingProductIds(Set<String> requestedProductIds, List<ProductDetailMock> receivedProducts) {

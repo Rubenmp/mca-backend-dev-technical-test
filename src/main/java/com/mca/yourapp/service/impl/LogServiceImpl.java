@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.mca.yourapp.service.utils.PreconditionUtils.requireNotNull;
@@ -114,7 +115,7 @@ public class LogServiceImpl implements LogService {
             handleLogError(exception);
         }
 
-        return logs;
+        return Collections.unmodifiableList(logs);
     }
 
     private LocalDateTime getLogDate(final String line) {

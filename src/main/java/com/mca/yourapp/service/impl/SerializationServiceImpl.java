@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.mca.yourapp.service.utils.PreconditionUtils.requireNotNull;
@@ -49,6 +50,6 @@ public class SerializationServiceImpl implements SerializationService {
             deserializedObjects.add(deserializedObject);
         }
 
-        return deserializedObjects;
+        return Collections.unmodifiableList(deserializedObjects);
     }
 }
