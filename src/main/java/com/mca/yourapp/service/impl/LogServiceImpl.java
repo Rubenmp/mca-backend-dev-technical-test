@@ -77,7 +77,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public List<Log> getLogs() {
+    public @NonNull List<Log> getLogs() {
         final List<Log> logs = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(LOG_FILE_NAME))) {
             String line = reader.readLine();

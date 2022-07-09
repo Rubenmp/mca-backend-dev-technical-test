@@ -93,7 +93,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
     @Override
     @Cacheable(value = GET_PRODUCT_CACHE)
-    public ProductDetailMock getProduct(@Nullable final String productId) {
+    public @Nullable ProductDetailMock getProduct(@Nullable final String productId) {
         if (productId == null) {
             return null;
         }

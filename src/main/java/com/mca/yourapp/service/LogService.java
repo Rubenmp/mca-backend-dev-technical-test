@@ -21,5 +21,5 @@ public interface LogService {
     /**
      * Return all logs sorted by date (ascending)
      * */
-    List<Log> getLogs();
+    @NonNull List<Log> getLogs();
 }

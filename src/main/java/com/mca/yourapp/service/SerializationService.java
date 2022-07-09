@@ -18,11 +18,14 @@ public interface SerializationService {
      * @param targetClass class of the object to be returned
      * @return deserialized object of class {@param targetClass}
      */
+    @Nullable
     <T> T deserialize(@Nullable String data, @NonNull Class<T> targetClass);
 
     /**
      * Transform json based string {@param data} into a list of objects with class {@param targetClass}
+     *
      * @see SerializationService#deserialize(String, Class)  deserialize
-     * */
+     */
+    @NonNull
     <T> List<T> deserializeList(@Nullable String data, @NonNull Class<T> targetClass);
 }
