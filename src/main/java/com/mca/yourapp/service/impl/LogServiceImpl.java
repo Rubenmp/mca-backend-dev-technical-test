@@ -3,6 +3,7 @@ package com.mca.yourapp.service.impl;
 import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.dto.Log;
 import com.mca.yourapp.service.dto.LogType;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ public class LogServiceImpl implements LogService {
     public static final boolean LOGS_ENABLED = true;
 
     @Override
-    public void log(final LogType type, final String message) {
+    public void log(@NonNull final LogType type, @NonNull final String message) {
         if (!LOGS_ENABLED) {
             return;
         }
@@ -69,7 +70,7 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public void log(final Exception exception) {
+    public void log(@NonNull final Exception exception) {
         final String logMessage = exception.getStackTrace() != null ? Arrays.toString(exception.getStackTrace()) : exception.getMessage();
         log(LogType.ERROR, logMessage);
     }

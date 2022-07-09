@@ -9,6 +9,7 @@ import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import com.mca.yourapp.service.utils.mapper.ServiceDtoMapper;
 import fr.xebia.extras.selma.Selma;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public List<ProductDetail> getSimilarProducts(final String productId) throws EntityNotFound {
+    public List<ProductDetail> getSimilarProducts(@Nullable final String productId) throws EntityNotFound {
         if (productId == null || mocksConnector.getProduct(productId) == null) {
             throw new EntityNotFound("Input product \"" + productId + "\" not found.");
         }

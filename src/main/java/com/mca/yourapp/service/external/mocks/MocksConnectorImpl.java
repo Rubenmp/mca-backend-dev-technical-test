@@ -6,6 +6,7 @@ import com.mca.yourapp.service.dto.LogType;
 import com.mca.yourapp.service.external.mocks.dto.ProductDetailMock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -49,7 +50,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
     @Override
     @Cacheable(value = GET_SIMILAR_PRODUCT_IDS_CACHE)
-    public List<String> getSimilarProductIds(final String productId) {
+    public List<String> getSimilarProductIds(@Nullable final String productId) {
         if (!isValidProductId(productId)) {
             logService.log(LogType.WARNING, "Trying to getSimilarProductIds for invalid product id: " + productId);
             return List.of();
@@ -89,13 +90,14 @@ public class MocksConnectorImpl implements MocksConnector {
         return BASE_MOCKS_MODULE_URL + "product/" + productId + "/similarids";
     }
 
-    
+
     @Override
     @Cacheable(value = GET_PRODUCT_CACHE)
-    public ProductDetailMock getProduct(final String productId) {
-        final List<String> productIds = new ArrayList<>();
-        productIds.add(productId);
-        return getProductsInParallel(productIds).stream().findFirst().orElse(null);
+    public ProductDetailMock getProduct(@Nullable final String productId) {
+        if (productId == null) {
+            return null;
+        }
+        return getProductsInParallel(List.of(productId)).stream().findFirst().orElse(null);
     }
 
     private Flux<String> getProductAsyncHandlingErrors(final String productId) {
@@ -122,7 +124,7 @@ public class MocksConnectorImpl implements MocksConnector {
 
     @Override
     @Cacheable(value = GET_PRODUCTS_IN_PARALLEL_CACHE)
-    public List<ProductDetailMock> getProductsInParallel(final Collection<String> productIds) {
+    public List<ProductDetailMock> getProductsInParallel(@Nullable final Collection<String> productIds) {
         if (productIds == null || productIds.isEmpty()) {
             return Collections.emptyList();
         }

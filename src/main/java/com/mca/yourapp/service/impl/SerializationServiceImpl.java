@@ -6,6 +6,8 @@ import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.SerializationService;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class SerializationServiceImpl implements SerializationService {
     @Autowired
     private LogService logService;
 
-    public <T> T deserialize(final String data, final Class<T> targetClass) {
+    public <T> T deserialize(@Nullable final String data, @NonNull final Class<T> targetClass) {
         if (data == null || data.isEmpty()) {
             return null;
         }
@@ -31,7 +33,7 @@ public class SerializationServiceImpl implements SerializationService {
     }
 
     @Override
-    public <T> List<T> deserializeList(final String data, final Class<T> targetClass) {
+    public <T> List<T> deserializeList(@Nullable final String data, @NonNull final Class<T> targetClass) {
         if (data == null || !data.startsWith("[")) {
             return List.of();
         }
