@@ -8,5 +8,5 @@ import java.util.List;
 
 
 public interface ProductService {
-    List<ProductDetail> getSimilarProducts(@Nullable final String productId) throws EntityNotFound;
+    List<ProductDetail> getSimilarProducts(@Nullable String productId) throws EntityNotFound;
 }

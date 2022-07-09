@@ -8,9 +8,9 @@ import java.util.List;
 
 
 public interface LogService {
-    void log(@NonNull final LogType type, @NonNull final String message);
+    void log(@NonNull LogType type, @NonNull String message);
 
-    void log(@NonNull final Exception exception);
+    void log(@NonNull Exception exception);
 
     List<Log> getLogs();
 }

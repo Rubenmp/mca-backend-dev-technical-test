@@ -10,15 +10,15 @@ public interface MocksConnector {
     /**
      * List of similar product ids to a given one ordered by similarity
      */
-    List<String> getSimilarProductIds(@Nullable final String productId);
+    List<String> getSimilarProductIds(@Nullable String productId);
 
     /**
      * Returns the product detail for a given productId or null if the product does not exist.
      */
-    ProductDetailMock getProduct(@Nullable final String productId);
+    ProductDetailMock getProduct(@Nullable String productId);
 
     /**
      * Returns the product details for a list of productId using multi-threading.
      */
-    List<ProductDetailMock> getProductsInParallel(@Nullable final Collection<String> productIds);
+    List<ProductDetailMock> getProductsInParallel(@Nullable Collection<String> productIds);
 }
