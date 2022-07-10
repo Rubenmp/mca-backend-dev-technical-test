@@ -30,7 +30,7 @@ dependencies {
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
 
-	// Rest calls
+	// Rest calls between modules
 	implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.1'
 
 	// DTOs mapper
