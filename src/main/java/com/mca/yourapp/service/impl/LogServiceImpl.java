@@ -29,6 +29,42 @@ public class LogServiceImpl implements LogService {
     private static final String LOG_INIT_MESSAGE_CHAR = ": ";
     public static final boolean LOGS_ENABLED = true;
 
+    public static final String START_LOG_REG = "==";
+    public static final String START_LOG_RESULT = "+";
+    public static final String START_LOG_BAD_REQUEST = "*";
+    public static final String START_LOG_EXCEPTION = "-";
+
+    public static final String LOG_SEP = "-";
+    private static int requestId = 1;
+
+    public int logRequest(final String productId) {
+        final int currentRequestId = nextRequestId();
+        final String log = START_LOG_REG + currentRequestId + LOG_SEP + productId + System.lineSeparator();
+        writeToLogFile(log);
+        return currentRequestId;
+    }
+
+    public void logResult(final int currentRequestId, final List<String> productIds) {
+        final String log = START_LOG_REG + START_LOG_RESULT + currentRequestId + LOG_SEP + productIds.toString() + System.lineSeparator();
+        writeToLogFile(log);
+    }
+
+    public void logBadRequest(final int currentRequestId) {
+        final String log = START_LOG_REG + START_LOG_BAD_REQUEST + currentRequestId + System.lineSeparator();
+        writeToLogFile(log);
+    }
+
+    public void logException(final int currentRequestId, final Exception e) {
+        final String log = START_LOG_REG + START_LOG_EXCEPTION + e.getMessage() + System.lineSeparator();
+        writeToLogFile(log);
+    }
+
+    public synchronized int nextRequestId() {
+        ++requestId;
+        return requestId;
+    }
+
+
     @Override
     public void log(@NonNull final LogType type, @NonNull final String message) {
         if (!LOGS_ENABLED) {
@@ -47,9 +83,9 @@ public class LogServiceImpl implements LogService {
      * It's better to guarantee that logs are written sequentially.
      * If there is any performance issue it can be fixed by increasing logs granularity
      * in different synchronized methods (using several files)
-     * */
+     */
     private synchronized void writeToLogFile(final String logMessage) {
-        try (FileWriter fw = new FileWriter(LOG_FILE_NAME,true)) {
+        try (FileWriter fw = new FileWriter(LOG_FILE_NAME, true)) {
             fw.write(logMessage);
         } catch (IOException e) {
             handleLogError(e);
@@ -135,7 +171,7 @@ public class LogServiceImpl implements LogService {
     }
 
     private LogType getLogType(final String logLine) {
-        if (logLine.startsWith(LOG_TYPE_INIT_CHARACTER) && logLine.length() >= 6 && List.of("E", "I", "W").contains(logLine.substring(1,2))) {
+        if (logLine.startsWith(LOG_TYPE_INIT_CHARACTER) && logLine.length() >= 6 && List.of("E", "I", "W").contains(logLine.substring(1, 2))) {
             final int endLogTypeIndex = logLine.indexOf(LOG_TYPE_END_CHAR);
 
             try {

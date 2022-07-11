@@ -1,7 +1,9 @@
 package com.mca.yourapp.interfaces;
 
 import com.mca.yourapp.interfaces.mapper.InterfaceDtoMapper;
+import com.mca.yourapp.service.LogService;
 import com.mca.yourapp.service.ProductService;
+import com.mca.yourapp.service.dto.ProductDetail;
 import com.mca.yourapp.service.utils.exception.EntityNotFound;
 import fr.xebia.extras.selma.Selma;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class ProductInterface {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private LogService logService;
+
     final InterfaceDtoMapper interfaceDtoMapper = Selma.builder(InterfaceDtoMapper.class).build();
 
 
@@ -39,11 +44,21 @@ public class ProductInterface {
      */
     @GetMapping(value = GET_SIMILAR_PRODUCTS_URL, produces = "application/json")
     public ResponseEntity<String> getSimilarProducts(@PathVariable(required = true) String productId) {
+        final int requestId = logService.logRequest(productId);
         try {
-            final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts = productService.getSimilarProducts(productId);
-            return new ResponseEntity<>(interfaceDtoMapper.toProductDetails(similarProducts).toString(), OK);
-        } catch (final EntityNotFound e) {
-            return new ResponseEntity<>("{\"message\":\"Product Not found\"}", HttpStatus.NOT_FOUND);
+            try {
+                final List<com.mca.yourapp.service.dto.ProductDetail> similarProducts = productService.getSimilarProducts(productId);
+                List<String> productIds = similarProducts.stream().map(ProductDetail::getId).toList();
+                logService.logResult(requestId, productIds);
+
+                return new ResponseEntity<>(interfaceDtoMapper.toProductDetails(similarProducts).toString(), OK);
+            } catch (final EntityNotFound e) {
+                logService.logBadRequest(requestId);
+                return new ResponseEntity<>("{\"message\":\"Product Not found\"}", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            logService.logException(requestId, e);
+            return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
