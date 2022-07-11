@@ -1,4 +1,4 @@
-# MCA backend dev test
+# MCA backend dev technical test
 Products API using external [mocks module](https://github.com/dalogax/backendDevTest).
 Only one endpoint is available to fetch all the products similar to a given one.
 For example, we can request similar products to the product with id 1 using:
