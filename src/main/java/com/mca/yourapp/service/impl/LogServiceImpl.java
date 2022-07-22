@@ -30,6 +30,7 @@ public class LogServiceImpl implements LogService {
     public static final boolean LOGS_ENABLED = true;
 
     public static final String START_LOG_REG = "==";
+    public static final String START_LOG_REQUEST = ".";
     public static final String START_LOG_RESULT = "+";
     public static final String START_LOG_BAD_REQUEST = "*";
     public static final String START_LOG_EXCEPTION = "-";
@@ -39,24 +40,24 @@ public class LogServiceImpl implements LogService {
 
     public int logRequest(final String productId) {
         final int currentRequestId = nextRequestId();
-        final String log = START_LOG_REG + currentRequestId + LOG_SEP + productId + System.lineSeparator();
-        writeToLogFile(log);
+        final String log = START_LOG_REG + START_LOG_REQUEST + currentRequestId + LOG_SEP + productId + System.lineSeparator();
+        log(LogType.INFO, log);
         return currentRequestId;
     }
 
     public void logResult(final int currentRequestId, final List<String> productIds) {
         final String log = START_LOG_REG + START_LOG_RESULT + currentRequestId + LOG_SEP + productIds.toString() + System.lineSeparator();
-        writeToLogFile(log);
+        log(LogType.INFO, log);
     }
 
     public void logBadRequest(final int currentRequestId) {
         final String log = START_LOG_REG + START_LOG_BAD_REQUEST + currentRequestId + System.lineSeparator();
-        writeToLogFile(log);
+        log(LogType.INFO, log);
     }
 
     public void logException(final int currentRequestId, final Exception e) {
         final String log = START_LOG_REG + START_LOG_EXCEPTION + e.getMessage() + System.lineSeparator();
-        writeToLogFile(log);
+        log(LogType.INFO, log);
     }
 
     public synchronized int nextRequestId() {
