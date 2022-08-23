@@ -14,28 +14,28 @@ The errors will be logged in file *yourapp.log*.
 ### Run using docker
 First, run the redis cache server:
 ```bash
-sudo docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with version 6.2.7
+docker run --rm -p 6379:6379 redis/redis-stack-server:latest # Tested with version 6.2.7
 # Another possibility is to run it in detached mode:
-# sudo docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
+# docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 ```
 
 then build *yourapp* image and run it:
 ```bash
-sudo docker build -f ./dockerfiles/DockerfileRun -t mca_yourapp .
-sudo docker run --network=host --rm mca_yourapp
+docker build -f ./dockerfiles/DockerfileRun -t mca_yourapp .
+docker run --rm -p 5000:5000 mca_yourapp
 # Another possibility is to run it in detached mode:
-# sudo docker run --network=host -d --name mca_yourapp_container mca_yourapp
+# docker run -d -p 5000:5000 --name mca_yourapp_container mca_yourapp
 ```
 
 See logs from container by ssh over it
 ```bash
-sudo docker exec -it `sudo docker ps --format '{{.ID}}' --filter ancestor=mca_yourapp | tail -1` /bin/bash
+docker exec -it `docker ps --format '{{.ID}}' --filter ancestor=mca_yourapp | tail -1` /bin/bash
 cat yourapp.log
 ```
 
 It is possible to remove cache data inside the redis container using
 ```bash
-sudo docker exec -it `sudo docker ps --format '{{.ID}}' --filter ancestor=redis/redis-stack-server:latest | tail -1` /bin/bash
+docker exec -it `docker ps --format '{{.ID}}' --filter ancestor=redis/redis-stack-server:latest | tail -1` /bin/bash
 redis-cli FLUSHDB # Run this command inside the container
 ```
 
@@ -46,19 +46,8 @@ These ports must be available:
 - localhost:6379 -> Redis in-memory cache default port
 
 Install:
-- Java 17 (OpenJDK 17)
-```bash
-sudo apt update
-sudo apt install openjdk-17-jre
-sudo apt install openjdk-17-jdk
-java --version # Verify installation
-```
-- Redis
-```bash
-sudo apt update
-sudo apt install redis-server
-redis-server --version # Verify installation
-```
+- Java 17: openjdk-17-jre openjdk-17-jdk
+- Redis: redis-server
 
 then run
 ```bash
@@ -77,20 +66,20 @@ Name convention:
 
 Integration tests require module Mocks (in project [*backendDevTest*](https://github.com/dalogax/backendDevTest)) to be running.
 ```bash
-sudo docker compose up -d simulado influxdb grafana
+docker compose up -d simulado influxdb grafana
 ```
 
 ### Run tests with docker
 Run all the tests with:
 ```bash
-sudo docker build -f ./dockerfiles/DockerfileTest -t mca_yourapp_test .
-sudo docker run --network=host --rm mca_yourapp_test
+docker build -f ./dockerfiles/DockerfileTest -t mca_yourapp_test .
+docker run --rm -p 5000:5000 mca_yourapp_test
 ```
 
 or only the unit tests:
 ```bash
-sudo docker build -f ./dockerfiles/DockerfileUnitTest -t mca_yourapp_unit_test .
-sudo docker run --network=host --rm mca_yourapp_unit_test
+docker build -f ./dockerfiles/DockerfileUnitTest -t mca_yourapp_unit_test .
+docker run --rm -p 5000:5000 mca_yourapp_unit_test
 ```
 
 
